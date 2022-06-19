@@ -1,0 +1,4 @@
+#!/bin/bash
+# add current day to text file
+mkdir -p ~/.habits
+printf "|$(date +%j)" >> ~/.habits/$1

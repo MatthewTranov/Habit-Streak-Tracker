@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [[ $# -eq 0 ]] ; then
+    echo 'need to give name of habit to show'
+    exit 0
+fi
+
+if [ ! -f ~/.habits/$1 ]; then
+    echo "$1 does not exist yet, run 'did $1' to create it"
+    exit 0
+fi
+
+# creates calander of year showing which days where something was done
+# on use adds current day to list of days it was done
+
+txtgreen=$(tput setab 2)    # Green background
+txtreset=$(tput sgr0)     # Reset your text
+content=$(cat ~/.habits/$1 |tr -d '\n'|sed -r "s/^\|//g")  # remove line ends from text, and leading |
+
+# -b makes ncal show in normal way (need to use ncal since cal does not support -h flag)
+# -y shows entire year
+# -j Jacobian clanader (days go 1,2,3, ... ,365)
+# -h removes highlighting of current day (cal highlighting current day messes with grep highlighting current day)
+# adds leading space (to make sure numbers appear surronded by spaces " num ")
+# then uses ANSI escape codes to color days
+ncal -jyh |
+  sed -r "s/^/ /g" |
+  sed "s/ /  /g" |
+  sed -r "s/ ($content) / $txtgreen\1$txtreset /g" |
+  sed "s/  / /g" 
